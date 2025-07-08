@@ -3,7 +3,7 @@ name: Build AppImage
 on:
   push:
     tags:
-      - 'v*.*.*' # Trigger on version tags like v1.0.0
+      - 'v*.*.*'
   workflow_dispatch:
 
 jobs:
@@ -11,14 +11,19 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: appimagecrafters/appimage-builder:latest
-      options: --privileged # Required for AppImage builds
+      options: --privileged
 
     steps:
+    # 🛠 Install git in the container for checkout to work
+    - name: Install git
+      run: |
+        apt-get update && apt-get install -y git
+
     # 📥 Checkout code
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # 🐍 Set up Python and install dependencies
+    # 🐍 Install Python dependencies
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
@@ -32,7 +37,7 @@ jobs:
           --name "Password_Generator" \
           --icon icon.png
 
-    # 📂 Prepare AppDir for AppImage build
+    # 📂 Prepare AppDir
     - name: Prepare AppDir
       run: |
         mkdir -p AppDir/usr/bin
@@ -44,7 +49,7 @@ jobs:
         cp pwdgeneratorapp/AppImageBuilder.yml AppImageBuilder.yml
         appimage-builder --recipe AppImageBuilder.yml
 
-    # 🚀 Upload AppImage to GitHub Release
+    # 🚀 Upload AppImage to Release
     - name: Upload AppImage to Release
       uses: softprops/action-gh-release@v2
       with:
