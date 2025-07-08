@@ -36,10 +36,9 @@ jobs:
       run: |
         pip3 install pyinstaller customtkinter
 
-    # 📦 Build binary with PyInstaller
+    # 📦 Build binary with PyInstaller (no subdir now)
     - name: Build with PyInstaller
       run: |
-        cd pwdgeneratorapp
         pyinstaller --noconfirm --onefile --windowed pwdgenerator.py \
           --name "Password_Generator" \
           --icon icon.png
@@ -48,12 +47,12 @@ jobs:
     - name: Prepare AppDir
       run: |
         mkdir -p AppDir/usr/bin
-        cp pwdgeneratorapp/dist/Password_Generator AppDir/usr/bin/
+        cp dist/Password_Generator AppDir/usr/bin/
 
     # 📦 Build AppImage
     - name: Build AppImage
       run: |
-        cp pwdgeneratorapp/AppImageBuilder.yml AppImageBuilder.yml
+        cp AppImageBuilder.yml AppImageBuilder.yml
         appimage-builder --recipe AppImageBuilder.yml
 
     # 🚀 Upload AppImage to GitHub Release
