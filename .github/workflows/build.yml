@@ -3,41 +3,51 @@ name: Build AppImage
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*' # Trigger on version tags like v1.0.0
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
+    container:
+      image: appimagecrafters/appimage-builder:latest
+      options: --privileged # Required for AppImage builds
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+    # 📥 Checkout code
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            python3-venv python3-pip libfuse2 \
-            libgtk-3-0 libnss3 libasound2 \
-            appimagetool fuse wget
+    # 🐍 Set up Python and install dependencies
+    - name: Install Python dependencies
+      run: |
+        python3 -m pip install --upgrade pip
+        pip3 install pyinstaller customtkinter
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+    # 📦 Build binary with PyInstaller
+    - name: Build with PyInstaller
+      run: |
+        cd pwdgeneratorapp
+        pyinstaller --noconfirm --onefile --windowed pwdgenerator.py \
+          --name "Password_Generator" \
+          --icon icon.png
 
-      - name: Build AppImage
-        run: |
-          python3 -m venv venv
-          source venv/bin/activate
-          pip install pyinstaller customtkinter
-          chmod +x build_appimage.sh
-          ./build_appimage.sh
+    # 📂 Prepare AppDir for AppImage build
+    - name: Prepare AppDir
+      run: |
+        mkdir -p AppDir/usr/bin
+        cp pwdgeneratorapp/dist/Password_Generator AppDir/usr/bin/
 
-      - name: Upload AppImage to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: Password_Generator-*.AppImage
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # 📦 Build AppImage
+    - name: Build AppImage
+      run: |
+        cp pwdgeneratorapp/AppImageBuilder.yml AppImageBuilder.yml
+        appimage-builder --recipe AppImageBuilder.yml
+
+    # 🚀 Upload AppImage to GitHub Release
+    - name: Upload AppImage to Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: '*.AppImage'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
