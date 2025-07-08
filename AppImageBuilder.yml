@@ -1,19 +1,23 @@
 version: 1
-
 AppDir:
-  path: ./AppDir
+  path: AppDir
   app_info:
-    id: pwdgenerator
-    name: Password Generator
-    icon: icon
-    version: "1.0"
-    exec: AppRun
-    exec_args: ""
+    id: com.example.passwordgenerator
+    name: Password_Generator
+    icon: icon.png
+    exec: usr/bin/Password_Generator
+    version: 1.0.0
 
   runtime:
     env:
-      PYTHONPATH: /usr/lib/python3
+      PATH: "$APPDIR/usr/bin:$PATH"
 
-AppImage:
-  arch: x86_64
-
+recipe:
+  AppDir:
+    files:
+      - usr/bin/Password_Generator
+    apt:
+      - libfuse2
+      - libgtk-3-0
+      - libgdk-pixbuf2.0-0
+      - libglib2.0-0
