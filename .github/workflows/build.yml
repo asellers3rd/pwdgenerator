@@ -9,24 +9,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: appimagecrafters/appimage-builder:latest
-      options: --privileged
 
     steps:
-    # 🛠 Install git in the container for checkout to work
-    - name: Install git
-      run: |
-        apt-get update && apt-get install -y git
-
-    # 📥 Checkout code
+    # 📥 Checkout code (works because no custom container)
     - name: Checkout repository
       uses: actions/checkout@v4
+
+    # 🛠 Install system dependencies
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y git python3 python3-pip fuse wget
+
+    # 🛠 Install AppImageBuilder
+    - name: Install AppImageBuilder
+      run: |
+        pip3 install appimage-builder
 
     # 🐍 Install Python dependencies
     - name: Install Python dependencies
       run: |
-        python3 -m pip install --upgrade pip
         pip3 install pyinstaller customtkinter
 
     # 📦 Build binary with PyInstaller
@@ -49,7 +51,7 @@ jobs:
         cp pwdgeneratorapp/AppImageBuilder.yml AppImageBuilder.yml
         appimage-builder --recipe AppImageBuilder.yml
 
-    # 🚀 Upload AppImage to Release
+    # 🚀 Upload AppImage to GitHub Release
     - name: Upload AppImage to Release
       uses: softprops/action-gh-release@v2
       with:
