@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environments
+venv/
+.env/
+
+# PyInstaller build folders
+build/
+dist/
+*.spec
+
+# AppImage output
+*.AppImage
+
+# OS metadata
+.DS_Store
+Thumbs.db

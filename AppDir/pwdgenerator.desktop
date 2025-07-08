@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=Password Generator
+Exec=AppRun
+Icon=icon
+Type=Application
+Categories=Utility;
+

@@ -1,0 +1,19 @@
+version: 1
+
+AppDir:
+  path: ./AppDir
+  app_info:
+    id: pwdgenerator
+    name: Password Generator
+    icon: icon
+    version: "1.0"
+    exec: AppRun
+    exec_args: ""
+
+  runtime:
+    env:
+      PYTHONPATH: /usr/lib/python3
+
+AppImage:
+  arch: x86_64
+
