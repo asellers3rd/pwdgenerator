@@ -1,0 +1,42 @@
+name: Build AppImage
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y python3-venv python3-pip appimagetool
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install pyinstaller customtkinter
+
+      - name: Build AppImage
+        run: |
+          source venv/bin/activate
+          chmod +x build_appimage.sh
+          ./build_appimage.sh
+
+      - name: Upload AppImage to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: Password_Generator-*.AppImage
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
