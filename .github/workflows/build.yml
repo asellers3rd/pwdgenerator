@@ -3,7 +3,7 @@ name: Build AppImage
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - 'v*.*.*' # Trigger on version tags like v1.0.0
   workflow_dispatch:
 
 jobs:
@@ -47,9 +47,11 @@ jobs:
     - name: Prepare AppDir
       run: |
         mkdir -p AppDir/usr/bin
+        mkdir -p AppDir/usr/share/icons
         cp dist/Password_Generator AppDir/usr/bin/
+        cp icon.png AppDir/usr/share/icons/icon.png
 
-    # 📦 Build AppImage (no cp needed)
+    # 📦 Build AppImage
     - name: Build AppImage
       run: |
         appimage-builder --recipe AppImageBuilder.yml

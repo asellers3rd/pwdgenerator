@@ -5,7 +5,7 @@ AppDir:
   app_info:
     id: com.example.passwordgenerator
     name: Password_Generator
-    icon: icon.png
+    icon: icon # remove extension, AppImage expects this
     exec: usr/bin/Password_Generator
     version: 1.0.0
 
@@ -18,7 +18,10 @@ AppDir:
     sources:
       - sourceline: "deb [trusted=yes] http://archive.ubuntu.com/ubuntu focal main universe"
     include:
+      - bash
+      - coreutils
       - libfuse2
       - libgtk-3-0
       - libgdk-pixbuf2.0-0
       - libglib2.0-0
+
