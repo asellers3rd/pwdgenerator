@@ -53,6 +53,6 @@ jobs:
     - name: Upload AppImage to GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        files: 'AppDir/**/*.AppImage'
+        files: '**/*.AppImage'
       env:
         GITHUB_TOKEN: ${{ secrets.GH_PAT }}
