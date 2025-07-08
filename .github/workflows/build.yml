@@ -8,23 +8,24 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
 
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            python3-venv python3-pip libfuse2 \
+            libgtk-3-0 libnss3 libasound2 \
+            appimagetool fuse wget
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
-
-      - name: Install Dependencies
-        run: |
-          sudo apt-get update
-          sudo DEBIAN_FRONTEND=noninteractive apt-get install -y \
-            python3-venv python3-pip libfuse2 libgtk-3-0 libnss3 libasound2 \
-            appimagetool
 
       - name: Build AppImage
         run: |
