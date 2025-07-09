@@ -20,7 +20,7 @@ jobs:
     - name: Build AppImage using Dockerfile
       run: |
         docker build -t pwdgen-builder .
-        docker run --rm -it \
+        docker run --rm \
           --device /dev/fuse \
           --cap-add SYS_ADMIN \
           --security-opt apparmor:unconfined \
