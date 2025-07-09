@@ -3,43 +3,32 @@ name: Build AppImage
 on:
   push:
     tags:
-      - 'v*.*.*' # Trigger only when you push version tags like v1.0.0
+      - 'v*.*.*' # Trigger on version tags like v1.0.0
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-      image: appimagecrafters/appimage-builder:latest
-      options: --privileged # AppImage needs fuse and special privileges
 
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Install Python dependencies
-      run: |
-        python3 -m pip install --upgrade pip
-        pip3 install -r pwdgeneratorapp/requirements.txt
-        pip3 install pyinstaller
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-    - name: Build with PyInstaller
+    - name: Build AppImage using Dockerfile
       run: |
-        cd pwdgeneratorapp
-        pyinstaller --noconfirm --onefile --windowed pwdgenerator.py \
-        --name "Password_Generator" \
-        --icon icon.png
+        docker build -t pwdgen-builder .
+        docker run --rm -it \
+          --device /dev/fuse \
+          --cap-add SYS_ADMIN \
+          --security-opt apparmor:unconfined \
+          -v "$PWD":/app \
+          pwdgen-builder \
+          bash -c "cd /app && ./build_appimage.sh"
 
-    - name: Prepare AppDir
-      run: |
-        mkdir -p AppDir/usr/bin
-        cp pwdgeneratorapp/dist/Password_Generator AppDir/usr/bin/
-
-    - name: Build AppImage
-      run: |
-        appimage-builder --recipe AppImageBuilder.yml
-
-    - name: Upload AppImage to Release
+    - name: Upload AppImage to GitHub Release
       uses: softprops/action-gh-release@v2
       with:
         files: '*.AppImage'
