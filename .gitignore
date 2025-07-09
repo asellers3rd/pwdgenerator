@@ -1,20 +1,15 @@
-# Python
+cat > .gitignore << 'EOF'
+# Ignore build artifacts
+AppDir/
+appimage-build/
+build/
+dist/
+*.AppImage
+*.tar.gz
 __pycache__/
 *.pyc
 *.pyo
-
-# Virtual environments
-venv/
-.env/
-
-# PyInstaller build folders
-build/
-dist/
+*.pyd
+.venv/
 *.spec
-
-# AppImage output
-*.AppImage
-
-# OS metadata
-.DS_Store
-Thumbs.db
+EOF

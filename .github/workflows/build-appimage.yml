@@ -1,0 +1,50 @@
+name: Build AppImage
+
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Trigger only on version tags like v1.0.0
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 📥 Checkout your repository
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 🐳 Build the custom Docker image (pwdgen-builder)
+    - name: Build Docker image
+      run: |
+        docker build -t pwdgen-builder .
+
+    # 🐳 Run containerized build process
+    - name: Run AppImage build in Docker
+      run: |
+        docker run --rm \
+          --device /dev/fuse \
+          --cap-add SYS_ADMIN \
+          --security-opt apparmor:unconfined \
+          -v "$PWD":/app \
+          pwdgen-builder \
+          bash -c "\
+            rm -rf /app/AppDir/python-venv && \
+            cd /app && \
+            pyinstaller --noconfirm --onefile --windowed pwdgenerator.py \
+              --name 'Password_Generator' \
+              --icon icon.png && \
+            mkdir -p /app/AppDir/usr/bin && \
+            cp dist/Password_Generator /app/AppDir/usr/bin/ && \
+            cp AppImageBuilder.yml /app/AppImageBuilder.yml && \
+            appimage-builder --recipe /app/AppImageBuilder.yml && \
+            appimagetool AppDir"
+
+    # 🚀 Upload the AppImage as a release asset
+    - name: Upload AppImage to Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: '**/*.AppImage'
+      env:
+        GITHUB_TOKEN: ${{ secrets.GH_PAT }}

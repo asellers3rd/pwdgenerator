@@ -5,7 +5,7 @@ AppDir:
   app_info:
     id: com.example.passwordgenerator
     name: Password_Generator
-    icon: icon # remove extension, AppImage expects this
+    icon: icon
     exec: usr/bin/Password_Generator
     version: 1.0.0
 
@@ -24,4 +24,3 @@ AppDir:
       - libgtk-3-0
       - libgdk-pixbuf2.0-0
       - libglib2.0-0
-

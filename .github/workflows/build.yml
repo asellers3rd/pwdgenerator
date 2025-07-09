@@ -23,15 +23,22 @@ jobs:
           libfuse2 libx11-dev libxext-dev libxrandr-dev \
           libxfixes-dev libxcursor-dev libxinerama-dev \
           libxi-dev libglib2.0-dev libgtk-3-dev \
-          build-essential wget git
+          build-essential wget git curl
 
     - name: Install AppImageBuilder
       run: |
-        pip3 install appimage-builder
+        pip3 install --no-cache-dir appimage-builder
+
+    - name: Install AppImageTool
+      run: |
+        wget -q https://github.com/AppImage/AppImageKit/releases/download/13/appimagetool-x86_64.AppImage \
+        -O appimagetool && \
+        chmod +x appimagetool && \
+        sudo mv appimagetool /usr/local/bin/
 
     - name: Install Python dependencies
       run: |
-        pip3 install pyinstaller customtkinter
+        pip3 install --no-cache-dir pyinstaller customtkinter
 
     - name: Build with PyInstaller
       run: |
@@ -49,6 +56,7 @@ jobs:
     - name: Build AppImage
       run: |
         appimage-builder --recipe AppImageBuilder.yml
+        appimagetool AppDir
 
     - name: Upload AppImage to GitHub Release
       uses: softprops/action-gh-release@v2
