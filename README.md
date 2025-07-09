@@ -19,7 +19,7 @@ This AppImage is **self-contained** — no Python or dependencies required.
 
 ## Download & Run
 
-1️ [Download Password\_Generator-x86\_64.AppImage](https://github.com/<your-username>/releases/latest)
+1️ [Download Password\_Generator-x86\_64.AppImage](https://github.com/asellers3rd/releases/latest)
 2️ Make it executable:
 
 ```bash
@@ -39,7 +39,7 @@ chmod +x Password_Generator-x86_64.AppImage
 ### 1️ Clone the Repo
 
 ```bash
-git clone https://github.com/<your-username>/pwdgeneratorapp.git
+git clone https://github.com/asellers3rd/pwdgeneratorapp.git
 cd pwdgeneratorapp
 ```
 
