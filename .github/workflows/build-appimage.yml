@@ -14,18 +14,15 @@ jobs:
       options: --privileged # AppImage needs fuse and special privileges
 
     steps:
-    # 📥 Checkout code
     - name: Checkout repository
       uses: actions/checkout@v4
 
-    # 🐍 Set up Python (already included in the container, but ensure correct version)
     - name: Install Python dependencies
       run: |
         python3 -m pip install --upgrade pip
         pip3 install -r pwdgeneratorapp/requirements.txt
         pip3 install pyinstaller
 
-    # 📦 Build binary with PyInstaller
     - name: Build with PyInstaller
       run: |
         cd pwdgeneratorapp
@@ -33,19 +30,15 @@ jobs:
         --name "Password_Generator" \
         --icon icon.png
 
-    # 📂 Prepare AppDir
     - name: Prepare AppDir
       run: |
         mkdir -p AppDir/usr/bin
         cp pwdgeneratorapp/dist/Password_Generator AppDir/usr/bin/
 
-    # 📦 Build AppImage
     - name: Build AppImage
       run: |
-        echo "Skipping redundant copy of AppImageBuilder.yml"
         appimage-builder --recipe AppImageBuilder.yml
 
-    # 🚀 Upload AppImage as GitHub Release asset
     - name: Upload AppImage to Release
       uses: softprops/action-gh-release@v2
       with:
