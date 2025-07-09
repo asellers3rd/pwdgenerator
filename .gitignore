@@ -1,15 +1,18 @@
-cat > .gitignore << 'EOF'
-# Ignore build artifacts
+# Ignore Python venv and caches
+venv/
+*.pyc
+__pycache__/
+
+# Ignore AppImage build artifacts
 AppDir/
-appimage-build/
+*.AppImage
+*.spec
 build/
 dist/
-*.AppImage
+
+# Ignore tarballs and other packaging outputs
 *.tar.gz
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.venv/
-*.spec
-EOF
+
+# Ignore Docker build cache
+appimage-build/
+.bundle.yml
